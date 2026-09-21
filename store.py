@@ -66,7 +66,7 @@ class _OnnxEmbedder:
         self._ef = ONNXMiniLM_L6_V2()
 
     def encode(self, texts, show_progress_bar: bool = False):
-        return [vector.tolist() for vector in self._ef(list(texts))]
+        return [self._ef([text])[0].tolist() for text in texts]
 
 
 def _sentence_transformer(name: str):
