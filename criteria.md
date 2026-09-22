@@ -4,13 +4,13 @@ Five criteria that say what "working" means for this system, written in unit 1
 **before** any results existed.
 
 An acceptance criterion names a target: a number, a count, a rate, or something
-a person could plainly observe. *"Retrieval works"* is an opinion. *"For at
+a person could plainly observe. _"Retrieval works"_ is an opinion. _"For at
 least 4 of my 5 test questions, the top results include a chunk containing the
-answer"* is a criterion.
+answer"_ is a criterion.
 
 Under each one, write a sentence or two on **why that target** and not a
 stricter or looser one. A reason that says something about your corpus or your
-pipeline earns credit; *"80% seemed reasonable"* does not.
+pipeline earns credit; _"80% seemed reasonable"_ does not.
 
 > Missing your own targets next unit costs you nothing. Setting a target so
 > easy you can't miss it does.
@@ -23,8 +23,13 @@ For at least 4 of my 5 test questions, the retrieved chunks include one that
 contains the answer.
 
 **Why this target:**
+
 <!-- e.g. "One of my questions is about a topic only two documents mention, so
      I expect that one to be hard." -->
+
+My `advice_threads` corpus contains 23 discussion threads with answers spread
+across replies, so I want retrieval to find the relevant information for most
+questions while allowing one difficult question to miss.
 
 ---
 
@@ -33,8 +38,14 @@ contains the answer.
 Every answer the system produces names at least one source document.
 
 **Why this target:**
+
 <!-- Why all five and not four? What about your setup makes that achievable —
      or what would have to go wrong for it not to be? -->
+
+**Why this target:**
+The system is intended to answer from the student-shared documents rather than
+presenting unsupported information. Requiring a source for every answer makes
+the grounding visible and checkable for each of my five test questions.
 
 ---
 
@@ -50,12 +61,22 @@ in at least 4 of 5 tries.
      just keep five of them, or the "4 of 5" above has nothing to be 4 of. -->
 
 **Why this target:**
+
 <!-- What did your distances look like when you set the cutoff in Milestone 4?
      Was there a clean gap, or did the two groups overlap? -->
+
+**Why this target:**
+My corpus covers student advice topics rather than general world knowledge, so
+clearly unrelated questions should normally be rejected before the model
+answers. Four of five allows one borderline retrieval case while still
+requiring the gate to refuse most clearly unsupported questions.
 
 ---
 
 ## 4. Something about your chunks
+
+At least 4 of 5 sampled chunks should be understandable as a standalone piece
+of information without needing the previous or following chunk.
 
 <!-- YOU WRITE THIS ONE.
 
@@ -69,15 +90,19 @@ in at least 4 of 5 tries.
        - "No chunk is shorter than 200 characters, since anything below that
           in my corpus turned out to be a heading with no content under it." -->
 
-
-
 **Why this target:**
-
-
+The `advice_threads` corpus contains complete question-and-reply discussions,
+and the starter chunker produced a very short 2-character tail chunk. I want
+most sampled chunks to retain enough surrounding context to be useful for
+retrieval and answering.
 
 ---
 
 ## 5. Your choice
+
+For at least 4 of my 5 test questions, the source document named in the answer
+must be a document that actually contains information used to answer the
+question.
 
 <!-- YOU WRITE THIS ONE TOO.
 
@@ -87,11 +112,11 @@ in at least 4 of 5 tries.
      present — anything, as long as it names a number or an observable
      outcome. -->
 
-
-
 **Why this target:**
-
-
+Naming a source alone does not prove that the answer is grounded in that
+source. Because my corpus contains multiple discussion threads on different
+student topics, the cited document should correspond to the information used
+in the answer for most test questions.
 
 ---
 
