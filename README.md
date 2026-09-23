@@ -140,12 +140,12 @@ without reading what came before or after?
      visible. Milestone 4. -->
 
 **Question:**
+When should I start looking for a summer internship?
 
 **Answer:**
+You should start looking earlier than feels reasonable, as large employers close their applications in October and November for the following summer. Smaller and local places hire in February and March if you missthe autumn window.
 
-```
-
-```
+(Source: thread_internship_timing.txt)
 
 **My relevance cutoff:**
 
@@ -158,9 +158,22 @@ without reading what came before or after?
 
      Milestone 4. -->
 
-| Question | In corpus? | Best distance |
-| -------- | ---------- | ------------- |
-|          |            |               |
+**My relevance cutoff:**
+
+I used a relevance cutoff of **0.6**. I tested five questions covered by my corpus and five clearly out-of-scope questions. The best distances for the in-corpus questions ranged from **0.263 to 0.454**, while the best distances for the out-of-scope questions ranged from **0.828 to 0.952**. This left a clear gap between the two groups, so I kept **0.6** as the relevance cutoff.
+
+| Question                                                         | In corpus? | Best distance |
+| ---------------------------------------------------------------- | ---------- | ------------- |
+| When should I start looking for a summer internship?             | Yes        | 0.263         |
+| What should I do if my roommate situation isn't working?         | Yes        | 0.350         |
+| Who should I talk to when changing my major?                     | Yes        | 0.454         |
+| What does the campus provide for students who ride bikes?        | Yes        | 0.446         |
+| When do smaller and local employers hire for summer internships? | Yes        | 0.314         |
+| What is the capital of Mongolia?                                 | No         | 0.948         |
+| How do I change the oil in a diesel engine?                      | No         | 0.930         |
+| Who won the 1994 World Cup?                                      | No         | 0.952         |
+| What is the recommended dosage of ibuprofen for a headache?      | No         | 0.828         |
+| How do I write a for loop in Rust?                               | No         | 0.872         |
 
 ## How I Used AI
 
