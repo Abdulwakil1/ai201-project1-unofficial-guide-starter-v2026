@@ -143,7 +143,7 @@ without reading what came before or after?
 When should I start looking for a summer internship?
 
 **Answer:**
-You should start looking earlier than feels reasonable, as large employers close their applications in October and November for the following summer. Smaller and local places hire in February and March if you missthe autumn window.
+You should start looking earlier than feels reasonable, as large employers close their applications in October and November for the following summer. Smaller and local places hire in February and March if you miss the autumn window.
 
 (Source: thread_internship_timing.txt)
 
@@ -157,8 +157,6 @@ You should start looking earlier than feels reasonable, as large employers close
      here — the table below wants all ten rows.
 
      Milestone 4. -->
-
-**My relevance cutoff:**
 
 I used a relevance cutoff of **0.6**. I tested five questions covered by my corpus and five clearly out-of-scope questions. The best distances for the in-corpus questions ranged from **0.263 to 0.454**, while the best distances for the out-of-scope questions ranged from **0.828 to 0.952**. This left a clear gap between the two groups, so I kept **0.6** as the relevance cutoff.
 
@@ -188,7 +186,10 @@ I used a relevance cutoff of **0.6**. I tested five questions covered by my corp
 
 **1.**
 
+I asked Copilot to help diagnose why the embedding step worked for a single text but failed when processing multiple texts on my Mac. Copilot identified the batch embedding call in \_OnnxEmbedder.encode() as the problem and suggested encoding each text individually. I reviewed the proposed change, kept the fix that called the embedding function once per text, and tested it before committing the change.
 **2.**
+
+I asked Copilot to help design a chunking strategy for the advice_threads corpus after I inspected the documents and the starter chunking output. Copilot suggested splitting on paragraph boundaries, packing paragraphs up to the configured 800-character limit, and merging a very short final chunk into the previous chunk. I reviewed the approach against the corpus and accepted it because the discussion threads were already organized as coherent question-and-reply blocks and the starter strategy produced a 2-character tail chunk. I then tested the new chunker and confirmed that it produced 23 chunks instead of 26, with a shortest chunk of 317 characters.
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
