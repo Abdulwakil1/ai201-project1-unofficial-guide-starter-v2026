@@ -216,13 +216,13 @@ I asked Copilot to help design a chunking strategy for the advice_threads corpus
 
      Milestone 1. -->
 
-| Criterion                              | Target | Run 1 | Run 2 | Run 3 | Verdict |
-| -------------------------------------- | ------ | ----- | ----- | ----- | ------- |
-| 1. Retrieved chunk contains the answer | 4 of 5 |       |       |       |         |
-| 2. Every answer names a source         | 5 of 5 |       |       |       |         |
-| 3. Gate stops out-of-corpus questions  | 4 of 5 |       |       |       |         |
-| 4.                                     |        |       |       |       |         |
-| 5.                                     |        |       |       |       |         |
+| Criterion                              | Target | Run 1  | Run 2  | Run 3  | Verdict |
+| -------------------------------------- | ------ | ------ | ------ | ------ | ------- |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
+| 2. Every answer names a source         | 5 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
+| 3. Gate stops out-of-corpus questions  | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
+| 4. Standalone chunk quality            | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
+| 5. Source supports answer              | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
 
 <!-- Underneath, paste the REAL output for each criterion from one of your
      runs — the actual text your system produced, not a description of it.
@@ -281,13 +281,13 @@ I asked Copilot to help design a chunking strategy for the advice_threads corpus
 <!-- Same format, same five criteria, three runs each.
      `python run_eval.py --label after` -->
 
-| Criterion                              | Target | Run 1  | Run 2  | Run 3  | Verdict |
-| -------------------------------------- | ------ | ------ | ------ | ------ | ------- |
-| 1. Retrieved chunk contains the answer | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
-| 2. Every answer names a source         | 5 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
-| 3. Gate stops out-of-corpus questions  | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
-| 4. Standalone chunk quality            | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
-| 5. Source supports answer              | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
+| Criterion                              | Target | Run 1 | Run 2 | Run 3 | Verdict |
+| -------------------------------------- | ------ | ----- | ----- | ----- | ------- |
+| 1. Retrieved chunk contains the answer | 4 of 5 |       |       |       |         |
+| 2. Every answer names a source         | 5 of 5 |       |       |       |         |
+| 3. Gate stops out-of-corpus questions  | 4 of 5 |       |       |       |         |
+| 4.                                     |        |       |       |       |         |
+| 5.                                     |        |       |       |       |         |
 
 **Did it help?**
 
