@@ -239,13 +239,13 @@ I asked Copilot to help design a chunking strategy for the advice_threads corpus
 
      Milestone 2. -->
 
-| #   | Criterion | Verdict | How I decided |
-| --- | --------- | ------- | ------------- |
-| 1   |           |         |               |
-| 2   |           |         |               |
-| 3   |           |         |               |
-| 4   |           |         |               |
-| 5   |           |         |               |
+| #   | Criterion                           | Verdict | How I decided                                                                                                                                                 |
+| --- | ----------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Retrieved chunk contains the answer | MET     | 5 of 5 retrieved chunks contained the information needed to answer their corresponding test question, exceeding the target of 4 of 5.                         |
+| 2   | Every answer names a source         | MET     | 5 of 5 generated answers named at least one source document across all three runs, meeting the target of 5 of 5.                                              |
+| 3   | Gate stops out-of-corpus questions  | MET     | The relevance gate rejected all 5 of 5 out-of-corpus questions, exceeding the target of 4 of 5.                                                               |
+| 4   | Standalone chunk quality            | MET     | 5 of 5 sampled advice_threads chunks were understandable as standalone pieces of information without needing adjacent chunks, exceeding the target of 4 of 5. |
+| 5   | Source supports answer              | MET     | 5 of 5 test questions named a source document that actually contained information used to answer the question, exceeding the target of 4 of 5.                |
 
 ## Diagnoses
 
@@ -266,6 +266,12 @@ I asked Copilot to help design a chunking strategy for the advice_threads corpus
      low, and which one you'd tighten and to what.
 
      Milestone 3. -->
+
+There were no misses in the baseline evaluation. All five criteria met their original targets, so there is no loading, chunking, embedding, retrieval, or generation failure to diagnose in this evaluation.
+
+The clean 5/5 results do not prove that the system is excellent. The evaluation used only five in-scope questions, and several criteria allowed one miss while still passing. I would tighten Criterion 5 in a future evaluation: instead of only requiring the named source to contain information used in the answer, require every factual claim in the answer to be supported by the source document(s) named in the answer. The original Criterion 5 and its 4-of-5 target remain unchanged.
+
+Two evaluation limitations are also worth noting. First, the Criterion 4 sample consisted of chunk index #0 from five different threads, so it did not deliberately test later chunks or mid-document boundaries. Second, scorer.py uses literal phrase matching: the roommate question scored as a fail in two of three runs because "mediation" did not appear verbatim, even though manual review found the answers semantically correct and grounded. This shows that automated scoring and manual judgment can disagree.
 
 ## The Improvement
 
