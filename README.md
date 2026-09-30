@@ -187,6 +187,7 @@ I used a relevance cutoff of **0.6**. I tested five questions covered by my corp
 **1.**
 
 I asked Copilot to help diagnose why the embedding step worked for a single text but failed when processing multiple texts on my Mac. Copilot identified the batch embedding call in \_OnnxEmbedder.encode() as the problem and suggested encoding each text individually. I reviewed the proposed change, kept the fix that called the embedding function once per text, and tested it before committing the change.
+
 **2.**
 
 I asked Copilot to help design a chunking strategy for the advice_threads corpus after I inspected the documents and the starter chunking output. Copilot suggested splitting on paragraph boundaries, packing paragraphs up to the configured 800-character limit, and merging a very short final chunk into the previous chunk. I reviewed the approach against the corpus and accepted it because the discussion threads were already organized as coherent question-and-reply blocks and the starter strategy produced a 2-character tail chunk. I then tested the new chunker and confirmed that it produced 23 chunks instead of 26, with a shortest chunk of 317 characters.
@@ -273,27 +274,33 @@ The clean 5/5 results do not prove that the system is excellent. The evaluation 
 
 Two evaluation limitations are also worth noting. First, the Criterion 4 sample consisted of chunk index #0 from five different threads, so it did not deliberately test later chunks or mid-document boundaries. Second, scorer.py uses literal phrase matching: the roommate question scored as a fail in two of three runs because "mediation" did not appear verbatim, even though manual review found the answers semantically correct and grounded. This shows that automated scoring and manual judgment can disagree.
 
-## The Improvement
+### The Improvement
 
-**What I changed:**
+**What I changed:** One line added to `GROUNDING_INSTRUCTION` in `generate.py`:
 
-**Why I picked it:**
+> "Every factual claim in the answer must be supported by the provided document excerpts and traceable to the relevant source filename. Do not include factual information that cannot be traced to the provided excerpts."
+
+**Why I picked this:**
 
 <!-- Connect it to a specific diagnosis above in one sentence. If you can't,
      you picked a fix because it sounded impressive. -->
 
-### Run Log — After
+Milestone 3's diagnosis found no failing criteria, but identified a specific gap in Criterion 5: the original criterion only requires the named source to contain _some_ information used in the answer, not that _every_ factual claim is traceable to it. This change targets that gap directly. Retrieval, chunking, embeddings, and the relevance gate were left untouched, since none of them had a diagnosed problem.
+
+#### Run Log — After
 
 <!-- Same format, same five criteria, three runs each.
      `python run_eval.py --label after` -->
 
-| Criterion                              | Target | Run 1 | Run 2 | Run 3 | Verdict |
-| -------------------------------------- | ------ | ----- | ----- | ----- | ------- |
-| 1. Retrieved chunk contains the answer | 4 of 5 |       |       |       |         |
-| 2. Every answer names a source         | 5 of 5 |       |       |       |         |
-| 3. Gate stops out-of-corpus questions  | 4 of 5 |       |       |       |         |
-| 4.                                     |        |       |       |       |         |
-| 5.                                     |        |       |       |       |         |
+| Criterion                              | Target | Run 1  | Run 2  | Run 3  | Verdict |
+| -------------------------------------- | ------ | ------ | ------ | ------ | ------- |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
+| 2. Every answer names a source         | 5 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
+| 3. Gate stops out-of-corpus questions  | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
+| 4. Standalone chunk quality            | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
+| 5. Source supports answer              | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET     |
+
+Retrieval distances were identical before and after for every question (e.g. roommate: 0.3498 both times), confirming that the only variable that changed was the generation prompt. Full output: `results/run_2026-09-29_2332_after.md`, compared against the baseline in `results/run_2026-09-28_0244_before.md`.
 
 **Did it help?**
 
@@ -303,6 +310,15 @@ Two evaluation limitations are also worth noting. First, the Criterion 4 sample 
      tell.
 
      Milestone 4. -->
+
+In one sentence: No — all five criteria were already 5/5 and stayed 5/5, and the change had a measurable side effect of making one answer less complete, though everything stated remained accurately sourced.
+
+A separate measurement, `scorer.py`'s literal-phrase check, did show a change: 14 of 15 scored generation runs passed before, versus 12 of 15 after, entirely on the roommate question (pass/fail/fail before, fail/fail/fail after). I traced this to an actual output difference, not a scorer quirk: one before-run stated that room changes "start with mediation," a fact that manual inspection of the stored source chunk (`thread_roommate_conflict.txt`) confirms is genuinely present in the source. All three after-runs omit this fact, converging instead on only the two details (talking to the RA, writing down specifics) that appeared consistently in both before and after runs.
+
+This means the after-runs are not less grounded — every claim in every after-run is still accurately sourced, so Criterion 5 correctly reads 5/5 on both sides. What changed is completeness: a true, source-supported detail that appeared inconsistently before is now consistently absent. One plausible explanation is that the instruction's cautionary framing ("do not include information that cannot be traced") made the model more conservative about what to include at all, rather than more precise about attribution — but that is a hypothesis, not something this experiment demonstrates directly.
+
+**Net result:**
+the change did not improve grounding on the metric it targeted, and had a measurable, source-verified side effect of reducing answer completeness on one question. The five original criteria are unaffected. This is a legitimate negative result — the diagnosis was reasonable and the change was minimal and isolated, but it didn't produce the intended improvement.
 
 ## What's Still Broken
 
