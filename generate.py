@@ -279,6 +279,7 @@ Rules:
 - Use only the information in the documents below. Do not use anything you know from elsewhere.
 - If the documents don't cover the question, say you don't have enough information. Do not guess.
 - Name the document your answer came from, using the filename given in each excerpt.
+- Every factual claim in the answer must be supported by the provided document excerpts and traceable to the relevant source filename. Do not include factual information that cannot be traced to the provided excerpts.
 - Be brief. Two or three sentences is usually enough."""
 
 
