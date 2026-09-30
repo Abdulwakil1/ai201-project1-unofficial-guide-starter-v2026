@@ -192,6 +192,16 @@ I asked Copilot to help diagnose why the embedding step worked for a single text
 
 I asked Copilot to help design a chunking strategy for the advice_threads corpus after I inspected the documents and the starter chunking output. Copilot suggested splitting on paragraph boundaries, packing paragraphs up to the configured 800-character limit, and merging a very short final chunk into the previous chunk. I reviewed the approach against the corpus and accepted it because the discussion threads were already organized as coherent question-and-reply blocks and the starter strategy produced a 2-character tail chunk. I then tested the new chunker and confirmed that it produced 23 chunks instead of 26, with a shortest chunk of 317 characters.
 
+### Unit 2
+
+**1.**
+
+I asked Copilot to make one minimal change to `GROUNDING_INSTRUCTION` in `generate.py` to strengthen source grounding. I explicitly told it to modify only that instruction and leave the retrieval, chunking, embedding, gate, and generation functions unchanged. Copilot added one bullet requiring every factual claim to be supported by the provided excerpts and traceable to the source filename. I reviewed the exact `git diff` and confirmed that only the intended line changed before running the after evaluation.
+
+**2.**
+
+I used Claude to help investigate an unexpected change in the Milestone 4 scorer results. The initial hypothesis was that the baseline roommate answer might have included an unsupported claim, but instead of accepting that explanation, I inspected the actual stored Chroma chunk for `thread_roommate_conflict.txt`. The chunk contained the word "mediation," confirming that the baseline answer was correctly grounded. This changed my conclusion: the after-runs had omitted a source-supported detail rather than removing an unsupported claim. I used the evaluation logs and direct repository data as the evidence for the final README conclusion.
+
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
      claims earns nothing.
@@ -330,9 +340,25 @@ the change did not improve grounding on the metric it targeted, and had a measur
 
      Milestone 5. -->
 
+No original criterion is currently MISSED — all five remain MET after the improvement (see Run Log — After). However, three limitations remain:
+
+1. **Answer completeness regressed on one question.** The Milestone 4 change resulted in all three after-runs omitting the source-supported detail that room changes start with mediation. None of the five original criteria measures completeness of all relevant source-supported information. I stopped here because another prompt change would have meant extending the experiment beyond the single improvement tested in Milestone 4. In a future iteration, I would test wording that requires traceability without making the instruction overly conservative.
+
+2. **Criterion 4's sample did not test later chunk positions.** The five sampled chunks were all index `#0` from different documents. This verified that those chunks were understandable on their own, but did not deliberately test later or mid-document chunks. I stopped here because this was an evaluation-method limitation rather than a diagnosed failure of the current pipeline.
+
+3. **The automated scorer does not fully measure the five criteria.** `scorer.py` uses literal substring matching, so it can mark a semantically correct answer as a failure when the expected phrase is not present verbatim. I did not modify the scorer because it is evaluation infrastructure and changing it would introduce another variable into the before/after experiment.
+
 ## What I'd Do Differently
 
 <!-- Knowing what you know now — which of your five criteria would you write
      differently, and why?
 
      Milestone 5. -->
+
+If I were rewriting my five criteria today, I would change two:
+
+**Criterion 5** — I would require every factual claim in the answer to be supported by a named source, rather than only requiring the named source to contain information used in the answer. The original criterion checks source correctness but does not fully test whether all factual claims are grounded.
+
+**Criterion 4** — I would add a sampling rule requiring chunks from different positions within documents, rather than allowing the evaluation to rely only on the first chunk of each document. This would provide stronger evidence about chunk-boundary quality.
+
+I would leave Criteria 1, 2, and 3 unchanged because the evaluation gave clear evidence that each was being measured as intended.
